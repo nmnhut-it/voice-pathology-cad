@@ -213,16 +213,16 @@ def extract_features_from_signal(
     Returns dict with all features + snr_db, or None on failure.
     """
     try:
-        processed, snr_db, _ = preprocess_signal(signal, sample_rate)
-        sound = parselmouth.Sound(processed, sampling_frequency=sample_rate)
+        processed, snr_db, _, output_sr = preprocess_signal(signal, sample_rate)
+        sound = parselmouth.Sound(processed, sampling_frequency=output_sr)
 
         features = {}
         features.update(_extract_pitch_features(sound))
         features.update(_extract_perturbation_features(sound))
         features.update(_extract_noise_features(sound))
         features.update(_extract_formant_features(sound))
-        features.update(_extract_mfcc_features(processed, sample_rate))
-        features.update(_extract_spectral_features(processed, sample_rate))
+        features.update(_extract_mfcc_features(processed, output_sr))
+        features.update(_extract_spectral_features(processed, output_sr))
         features["snr_db"] = snr_db
         return features
     except Exception as e:
